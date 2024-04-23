@@ -1,0 +1,22 @@
+create table songs(initials string,track_id string, artist_name string, title string, loudness number, tempo number, time_signature number, key number,mode number,duration number, year number) type="csv" path="C:\\CSV_JSON_Files\\songs.csv";
+
+create type region(name string) ;
+create type country(id number, name string, region region) ;
+create type city(id number, name string, country country) ;
+
+create table clubs (id number,name string, city city) type="json" path="C:\\CSV_JSON_Files\\clubs.json";
+create table countries(id number, name string, code string, post_code string, region string) type="json" path= "C:\\CSV_JSON_Files\\countries.json" ;
+
+create aggregation_function count("C:\\CSV_JSON_Files\\AggJar\\count.jar","Count","count",number,[number]) ;
+ create aggregation_function avg("C:\\CSV_JSON_Files\\AggJar\\AvgAgg.jar","Avg","avg",number,[number]) ;
+ create aggregation_function max("C:\\CSV_JSON_Files\\AggJar\\max.jar","Max","max",number,[number]) ;
+
+create aggregation_function stdev("C:\\CSV_JSON_Files\\AggJar\\stdev.jar","stdev","stdev",number,[number]) ;
+
+fn()
+{
+    var in_q = select time_signature from songs where key < 5;
+    var cl = select count(*) cnt,avg(profitability) avg_ from clubs
+    inner join in_q on in_q.time_signature = clubs.id;
+    print(cl);
+}
